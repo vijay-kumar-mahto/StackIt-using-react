@@ -21,8 +21,16 @@ router.get('/', optionalAuth, asyncHandler(async (req: AuthenticatedRequest, res
   const params: any[] = [];
 
   if (search) {
-    whereClause += ' AND (q.title LIKE ? OR q.description LIKE ?)';
-    params.push(`%${search}%`, `%${search}%`);
+    whereClause += ` AND (
+      q.title LIKE ? OR 
+      q.description LIKE ? OR 
+      EXISTS (
+        SELECT 1 FROM question_tags qt 
+        JOIN tags t ON qt.tag_id = t.id 
+        WHERE qt.question_id = q.id AND t.name LIKE ?
+      )
+    )`;
+    params.push(`%${search}%`, `%${search}%`, `%${search}%`);
   }
 
   if (tag) {
@@ -262,13 +270,18 @@ router.post('/', authenticateToken,
       // Get or create tag
       let tagId = await new Promise<number>((resolve, reject) => {
         db.get('SELECT id FROM tags WHERE name = ?', [tagName], (err, row: any) => {
-          if (err) reject(err);
-          else if (row) resolve(row.id);
-          else {
+          if (err) {
+            reject(err);
+          } else if (row) {
+            resolve(row.id);
+          } else {
             // Create new tag
             db.run('INSERT INTO tags (name) VALUES (?)', [tagName], function (err) {
-              if (err) reject(err);
-              else resolve(this.lastID);
+              if (err) {
+                reject(err);
+              } else {
+                resolve(this.lastID);
+              }
             });
           }
         });
