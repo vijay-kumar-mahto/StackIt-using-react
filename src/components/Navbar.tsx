@@ -53,6 +53,15 @@ const Navbar = () => {
 
                 {/* User Menu */}
                 <div className="flex items-center space-x-3">
+                  {user.role === 'admin' && (
+                    <Link
+                      to="/admin"
+                      className="px-3 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
+                      title="Admin Panel"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <Link
                     to={`/users/${user.username}`}
                     className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors"

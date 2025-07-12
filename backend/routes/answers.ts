@@ -283,9 +283,20 @@ router.post('/:id/vote', authenticateToken,
       );
     });
 
+    // Get updated vote count
+    const updatedAnswer = await new Promise<any>((resolve, reject) => {
+      db.get('SELECT votes FROM answers WHERE id = ?', [answerId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
     res.json({
       success: true,
-      data: { voteChange },
+      data: {
+        votes: updatedAnswer.votes,
+        userVote: voteChange === 0 ? null : type
+      }
     });
   })
 );

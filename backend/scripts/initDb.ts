@@ -67,6 +67,28 @@ const tables = [
     PRIMARY KEY (question_id, tag_id),
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
+  )`,
+  
+  `CREATE TABLE IF NOT EXISTS votes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    target_id INTEGER NOT NULL,
+    target_type TEXT NOT NULL CHECK (target_type IN ('question', 'answer')),
+    vote_type TEXT NOT NULL CHECK (vote_type IN ('up', 'down')),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, target_id, target_type),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+  )`,
+  
+  `CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
   )`
 ];
 

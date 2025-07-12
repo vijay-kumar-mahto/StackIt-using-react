@@ -4,6 +4,11 @@ import { Database } from '../database/database';
 import { authenticateToken, optionalAuth, AuthenticatedRequest } from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
 
+// Extend global namespace for view cache
+declare global {
+  var viewCache: Map<string, number> | undefined;
+}
+
 const router = express.Router();
 
 // Get all questions with pagination, filtering, and search
@@ -129,13 +134,49 @@ router.get('/:id', optionalAuth, asyncHandler(async (req: AuthenticatedRequest, 
   const questionId = parseInt(req.params.id);
   const db = Database.getDB();
 
-  // Increment view count
-  await new Promise<void>((resolve, reject) => {
-    db.run('UPDATE questions SET views = views + 1 WHERE id = ?', [questionId], (err) => {
-      if (err) reject(err);
-      else resolve();
+  // Get user's IP address for view tracking
+  const userIP = req.ip || req.connection.remoteAddress || 'unknown';
+  const userId = req.user?.id || null;
+  
+  // Create a unique identifier for this view (IP + user + question)
+  const viewKey = `${userIP}_${userId}_${questionId}`;
+  
+  // Simple in-memory cache to prevent multiple increments within a short time
+  const VIEW_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  
+  if (!global.viewCache) {
+    global.viewCache = new Map();
+  }
+  
+  const lastViewTime = global.viewCache.get(viewKey);
+  const now = Date.now();
+  
+  // Only increment view count if this is a new view or last view was more than 5 minutes ago
+  if (!lastViewTime || (now - lastViewTime) > VIEW_CACHE_DURATION) {
+    await new Promise<void>((resolve, reject) => {
+      db.run('UPDATE questions SET views = views + 1 WHERE id = ?', [questionId], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
-  });
+    
+    // Update the cache with current time
+    global.viewCache.set(viewKey, now);
+    
+    // Clean up old entries periodically (keep only last 1000 entries)
+    if (global.viewCache!.size > 1000) {
+      const entries = Array.from(global.viewCache!.entries()) as [string, number][];
+      const cutoff = now - VIEW_CACHE_DURATION;
+      global.viewCache!.clear();
+      
+      // Keep only recent entries
+      entries.forEach(([key, time]) => {
+        if (time > cutoff) {
+          global.viewCache!.set(key, time);
+        }
+      });
+    }
+  }
 
   // Get question details
   const question = await new Promise<any>((resolve, reject) => {
@@ -303,6 +344,137 @@ router.post('/', authenticateToken,
     res.status(201).json({
       success: true,
       data: { questionId },
+    });
+  })
+);
+
+// Vote on a question
+router.post('/:id/vote', authenticateToken,
+  [
+    body('type')
+      .isIn(['up', 'down'])
+      .withMessage('Vote type must be "up" or "down"'),
+  ],
+  asyncHandler(async (req: AuthenticatedRequest, res: express.Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Validation failed', details: errors.array() }
+      });
+    }
+
+    const questionId = parseInt(req.params.id);
+    const { type } = req.body;
+    const userId = req.user!.id;
+    const db = Database.getDB();
+
+    // Check if question exists
+    const question = await new Promise<any>((resolve, reject) => {
+      db.get('SELECT id, user_id FROM questions WHERE id = ?', [questionId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        error: { message: 'Question not found' }
+      });
+    }
+
+    // Users cannot vote on their own questions
+    if (question.user_id === userId) {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'You cannot vote on your own question' }
+      });
+    }
+
+    // Check existing vote
+    const existingVote = await new Promise<any>((resolve, reject) => {
+      db.get(
+        'SELECT vote_type FROM votes WHERE user_id = ? AND target_id = ? AND target_type = "question"',
+        [userId, questionId],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
+
+    let voteChange = 0;
+
+    if (existingVote) {
+      if (existingVote.vote_type === type) {
+        // Remove vote if clicking same type
+        await new Promise<void>((resolve, reject) => {
+          db.run(
+            'DELETE FROM votes WHERE user_id = ? AND target_id = ? AND target_type = "question"',
+            [userId, questionId],
+            (err) => {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
+        });
+        voteChange = type === 'up' ? -1 : 1;
+      } else {
+        // Change vote type
+        await new Promise<void>((resolve, reject) => {
+          db.run(
+            'UPDATE votes SET vote_type = ? WHERE user_id = ? AND target_id = ? AND target_type = "question"',
+            [type, userId, questionId],
+            (err) => {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
+        });
+        voteChange = type === 'up' ? 2 : -2;
+      }
+    } else {
+      // Create new vote
+      await new Promise<void>((resolve, reject) => {
+        db.run(
+          'INSERT INTO votes (user_id, target_id, target_type, vote_type) VALUES (?, ?, "question", ?)',
+          [userId, questionId, type],
+          (err) => {
+            if (err) reject(err);
+            else resolve();
+          }
+        );
+      });
+      voteChange = type === 'up' ? 1 : -1;
+    }
+
+    // Update question vote count
+    await new Promise<void>((resolve, reject) => {
+      db.run(
+        'UPDATE questions SET votes = votes + ? WHERE id = ?',
+        [voteChange, questionId],
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
+    });
+
+    // Get updated vote count
+    const updatedQuestion = await new Promise<any>((resolve, reject) => {
+      db.get('SELECT votes FROM questions WHERE id = ?', [questionId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    res.json({
+      success: true,
+      data: {
+        votes: updatedQuestion.votes,
+        userVote: voteChange === 0 ? null : type
+      }
     });
   })
 );

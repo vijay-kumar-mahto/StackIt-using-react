@@ -10,6 +10,7 @@ import questionRoutes from './routes/questions';
 import answerRoutes from './routes/answers';
 import userRoutes from './routes/users';
 import notificationRoutes from './routes/notifications';
+import adminRoutes from './routes/admin';
 import { Database } from './database/database';
 import { errorHandler } from './middleware/errorHandler';
 
@@ -22,7 +23,7 @@ Database.init();
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 1000, // limit each IP to 1000 requests per windowMs (increased for development)
   message: 'Too many requests from this IP, please try again later.',
 });
 
@@ -48,6 +49,7 @@ app.use('/api/questions', questionRoutes);
 app.use('/api/answers', answerRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Root route - API info
 app.get('/', (req, res) => {

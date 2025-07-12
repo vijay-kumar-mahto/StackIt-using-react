@@ -68,10 +68,30 @@ const QuestionPage = () => {
 
     try {
       const endpoint = targetType === 'question' ? `/api/questions/${targetId}/vote` : `/api/answers/${targetId}/vote`;
-      await api.post(endpoint, { type: voteType });
+      const response = await api.post(endpoint, { type: voteType });
       
-      // Refresh question data
-      fetchQuestion();
+      const { votes, userVote } = response.data.data;
+      
+      if (targetType === 'question' && question) {
+        // Update question state optimistically
+        setQuestion({
+          ...question,
+          votes,
+          userVote
+        });
+      } else if (targetType === 'answer' && question) {
+        // Update answer state optimistically within the question
+        setQuestion({
+          ...question,
+          answers: question.answers.map(answer =>
+            answer.id === targetId
+              ? { ...answer, votes, userVote }
+              : answer
+          )
+        });
+      }
+      
+      toast.success(`Vote ${userVote ? 'recorded' : 'removed'}!`);
     } catch (error: any) {
       const message = error.response?.data?.error?.message || 'Failed to vote';
       toast.error(message);
