@@ -299,12 +299,4 @@ npm run dev:backend     # Backend only
 | **Backend API** | [http://localhost:3001](http://localhost:3001) | Express.js API server |
 | **Database** | `./backend/database.sqlite` | SQLite database file |
 
-### 📊 Database Status
-
-After successful installation, your database will contain:
-- 📝 **186 questions** with various difficulty levels
-- 👥 **15 users** with different roles and permissions
-- 🏷️ **25 tags** for categorizing content
-- 📈 **Sample analytics data** for testing
-
 ---

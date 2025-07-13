@@ -11,11 +11,11 @@ const db = new sqlite3_1.default.Database(dbPath);
 const seedData = async () => {
     console.log('🌱 Starting to seed the database...');
     try {
-        const hashedPassword = await bcryptjs_1.default.hash('password123', 12);
+        const hashedPassword = await bcryptjs_1.default.hash('1234', 12);
         const users = [
             {
-                username: 'alice_dev',
-                email: 'alice@example.com',
+                username: 'admin',
+                email: 'admin@example.com',
                 password: hashedPassword,
                 role: 'admin'
             },

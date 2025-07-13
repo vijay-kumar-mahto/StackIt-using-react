@@ -18,9 +18,9 @@ const getRandomInt = (min, max) => {
 const seedData = async () => {
     console.log('🌱 Starting to seed the database with comprehensive data...');
     try {
-        const hashedPassword = await bcryptjs_1.default.hash('password123', 12);
+        const hashedPassword = await bcryptjs_1.default.hash('1234', 12);
         const users = [
-            { username: 'alice_dev', email: 'alice@example.com', password: hashedPassword, role: 'admin' },
+            { username: 'admin', email: 'admin@example.com', password: hashedPassword, role: 'admin' },
             { username: 'bob_coder', email: 'bob@example.com', password: hashedPassword, role: 'user' },
             { username: 'charlie_js', email: 'charlie@example.com', password: hashedPassword, role: 'user' },
             { username: 'diana_react', email: 'diana@example.com', password: hashedPassword, role: 'user' },

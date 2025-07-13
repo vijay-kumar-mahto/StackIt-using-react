@@ -82,6 +82,7 @@
 | **Username** | `admin` | Full system access |
 | **Role** | Admin | Manage users, questions, answers |
 | **Capabilities** | | Delete content, ban users, system settings |
+| **Email** | | `admin@example.com` |
 
 </div>
 
@@ -89,12 +90,12 @@
 
 <div align="center">
 
-| Username | Role | Specialization | Activity Level |
+| Username | Role | Email | Activity Level |
 |----------|------|---------------|----------------|
-| `bob_coder` | User | Backend Development | High |
-| `charlie_js` | User | Frontend Development | Medium |
-| `alice_data` | User | Data Science | Medium |
-| `dave_mobile` | User | Mobile Development | Low |
+| `bob_coder` | User | `bob_coder@example.com` | High |
+| `charlie_js` | User | `charlie_js@example.com` | Medium |
+| `alice_data` | User | `alice_data@example.com` | Medium |
+| `dave_mobile` | User | `dave_mobile@example.com` | Low |
 
 </div>
 
