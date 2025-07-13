@@ -308,9 +308,3 @@ After successful installation, your database will contain:
 - 📈 **Sample analytics data** for testing
 
 ---
-
-<div align="center">
-
-**🎉 Happy coding with StackIt!**
-
-</div>
