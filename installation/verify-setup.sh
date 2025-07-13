@@ -136,7 +136,7 @@ if [ -f "backend/database.sqlite" ]; then
     fi
 else
     print_warning "Database file not found"
-    print_status "Run: npm run seed:large"
+    print_status "Run: ./installation/seed-database.sh"
 fi
 
 # Check build capability

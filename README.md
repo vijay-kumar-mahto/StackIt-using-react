@@ -5,7 +5,10 @@
   <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
   <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
   <img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"/>
+<<<<<<< HEAD
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License"/>
+=======
+>>>>>>> 82866fd (installation &  database script updated)
 </div>
 
 <p align="center">
@@ -145,6 +148,7 @@
 
 For detailed installation instructions, please refer to our comprehensive [Installation Guide](./installation/INSTALL.md).
 
+<<<<<<< HEAD
 **Quick Setup:**
 ```bash
 # Clone the repository
@@ -158,6 +162,25 @@ npm install
 npm run dev
 ```
 
+=======
+### Seeding Sample Data
+
+For detailed Seeding instructions, please refer to our comprehensive [Seeding Guide](./script/SCRIPT.md).
+
+**Quick Setup:**
+```bash
+# Clone the repository
+git clone https://github.com/vijay-kumar-mahto/stackit.git
+cd stackit
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+>>>>>>> 82866fd (installation &  database script updated)
 The application will be available at:
 - **Frontend**: `http://localhost:5173`
 - **Backend**: `http://localhost:3001`

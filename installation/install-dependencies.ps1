@@ -239,7 +239,7 @@ function Test-ProjectStructure {
 }
 
 function Setup-Database {
-    Write-Status "Setting up database..."
+    Write-Status "Setting up database structure..."
     try {
         # Ensure we're in project directory
         if (-not (Test-Path "package.json")) {
@@ -247,29 +247,58 @@ function Setup-Database {
             return $false
         }
         
-        # Build backend first if needed
-        if (Test-Path "backend/tsconfig.json") {
-            Write-Status "Compiling TypeScript backend..."
-            npx tsc -p backend/tsconfig.json 2>$null
+        # Navigate to backend
+        Push-Location "backend"
+        
+        # Install backend dependencies if needed
+        if (-not (Test-Path "node_modules" -PathType Container)) {
+            Write-Status "Installing backend dependencies..."
+            npm install
+            if ($LASTEXITCODE -ne 0) {
+                throw "Failed to install backend dependencies"
+            }
         }
         
-        # Initialize database
-        if (Test-Path "backend/scripts/seedDataLarge.ts") {
-            Write-Status "Initializing database with sample data..."
-            npm run seed:large
-            Write-Success "Database initialized with sample data"
-            return $true
+        # Build backend first if needed
+        if (Test-Path "tsconfig.json") {
+            Write-Status "Compiling TypeScript backend..."
+            npx tsc -p tsconfig.json 2>$null
         }
-        elseif (Test-Path "backend/scripts/seedData.ts") {
-            Write-Status "Initializing database with basic data..."
-            npm run seed
-            Write-Success "Database initialized"
-            return $true
+        
+        # Initialize empty database (create tables only)
+        Write-Status "Initializing database tables..."
+        $success = $false
+        
+        # Try different initialization commands
+        try {
+            npm run db:init 2>$null
+            $success = ($LASTEXITCODE -eq 0)
+        } catch {}
+        
+        if (-not $success) {
+            try {
+                npm run setup:empty 2>$null
+                $success = ($LASTEXITCODE -eq 0)
+            } catch {}
         }
-        else {
-            Write-Warning "Database initialization script not found"
-            return $false
+        
+        if ($success) {
+            Write-Success "Database tables created successfully"
+        } else {
+            Write-Warning "Database initialization script not found or failed"
+            Write-Status "You can seed the database later using: .\script\seed-database.ps1"
         }
+        
+        Pop-Location
+        
+        Write-Success "Database setup complete!"
+        Write-Host ""
+        Write-Status "To seed the database with sample data, run:"
+        Write-Host "  .\script\seed-database.ps1        # Interactive seeding" -ForegroundColor Green
+        Write-Host "  .\script\seed-database.ps1 -Basic # Basic dataset" -ForegroundColor Green
+        Write-Host "  .\script\seed-database.ps1 -Large # Large dataset" -ForegroundColor Green
+
+        return $true
     }
     catch {
         Write-Error "Failed to setup database: $($_.Exception.Message)"
@@ -295,7 +324,11 @@ DESCRIPTION:
     - Git
     - Visual Studio Build Tools
     - Project npm dependencies
-    - Database setup
+    - Database structure setup
+
+NOTE:
+    Database seeding is handled by a separate script:
+    .\script\seed-database.ps1
 
 EXAMPLES:
     .\install-dependencies.ps1
@@ -418,18 +451,27 @@ function Main {
         Write-Host "  ✓ Node.js version: $(node --version)" -ForegroundColor $Colors.Green
         Write-Host "  ✓ npm version: $(npm --version)" -ForegroundColor $Colors.Green
         Write-Host "  ✓ Project dependencies: $((Get-ChildItem node_modules).Count) packages" -ForegroundColor $Colors.Green
-        Write-Host "  ✓ Database: Initialized" -ForegroundColor $Colors.Green
+        
+        # Check if database file exists
+        if (Test-Path "backend/database.sqlite") {
+            Write-Host "  ✓ Database: Tables initialized" -ForegroundColor $Colors.Green
+        } else {
+            Write-Host "  ⚠ Database: Not initialized" -ForegroundColor $Colors.Yellow
+        }
+        
         Write-Host ""
-        Write-Status "You can now run the following commands:"
-        Write-Host "  npm run dev     - Start development server" -ForegroundColor $Colors.Green
-        Write-Host "  npm run build   - Build for production" -ForegroundColor $Colors.Green
-        Write-Host "  npm run seed    - Seed database with sample data" -ForegroundColor $Colors.Green
+        Write-Status "Available commands:"
+        Write-Host "  npm run dev                          - Start development server" -ForegroundColor $Colors.Green
+        Write-Host "  npm run build                        - Build for production" -ForegroundColor $Colors.Green
+        Write-Host "  .\script\seed-database.ps1           - Seed database with sample data" -ForegroundColor $Colors.Green
         Write-Host ""
         Write-Status "Development URLs:"
         Write-Host "  Frontend: http://localhost:5173" -ForegroundColor $Colors.Blue
         Write-Host "  Backend:  http://localhost:3001" -ForegroundColor $Colors.Blue
         Write-Host ""
-        Write-Status "To start development, run: npm run dev" -ForegroundColor $Colors.Green
+        Write-Status "Next Steps:"
+        Write-Host "  1. Seed the database: .\script\seed-database.ps1" -ForegroundColor $Colors.Green
+        Write-Host "  2. Start development:  npm run dev" -ForegroundColor $Colors.Green
     }
     else {
         Write-Error "Installation completed but some dependencies are still missing"

@@ -21,11 +21,11 @@ const seedData = async () => {
 
   try {
     // Hash passwords for dummy users
-    const hashedPassword = await bcrypt.hash('password123', 12);
+    const hashedPassword = await bcrypt.hash('1234', 12);
 
     // Insert dummy users
     const users = [
-      { username: 'alice_dev', email: 'alice@example.com', password: hashedPassword, role: 'admin' },
+      { username: 'admin', email: 'admin@example.com', password: hashedPassword, role: 'admin' },
       { username: 'bob_coder', email: 'bob@example.com', password: hashedPassword, role: 'user' },
       { username: 'charlie_js', email: 'charlie@example.com', password: hashedPassword, role: 'user' },
       { username: 'diana_react', email: 'diana@example.com', password: hashedPassword, role: 'user' },

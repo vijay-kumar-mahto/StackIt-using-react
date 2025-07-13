@@ -211,6 +211,7 @@ parse_args() {
                 print_status "Running in automated mode"
                 shift
                 ;;
+<<<<<<< HEAD
             --seed)
                 if [[ -n $2 && $2 != --* ]]; then
                     SEED_OPTION="$2"
@@ -230,6 +231,8 @@ parse_args() {
                     exit 1
                 fi
                 ;;
+=======
+>>>>>>> 82866fd (installation &  database script updated)
             *)
                 print_error "Unknown option: $1"
                 show_usage
@@ -288,7 +291,7 @@ prompt_user() {
 
 # Function to setup database
 setup_database() {
-    print_status "Setting up database..."
+    print_status "Setting up database structure..."
     
     # Ensure we're in project directory
     if [ ! -f "package.json" ]; then
@@ -296,12 +299,22 @@ setup_database() {
         return 1
     fi
     
-    # Build backend first if needed
-    if [ -f "backend/tsconfig.json" ]; then
-        print_status "Compiling TypeScript backend..."
-        npx tsc -p backend/tsconfig.json 2>/dev/null || print_warning "TypeScript compilation had warnings"
+    # Navigate to backend
+    cd backend || {
+        print_error "Failed to navigate to backend directory"
+        return 1
+    }
+    
+    # Install backend dependencies if needed
+    if [ ! -d "node_modules" ]; then
+        print_status "Installing backend dependencies..."
+        npm install || {
+            print_error "Failed to install backend dependencies"
+            return 1
+        }
     fi
     
+<<<<<<< HEAD
     # Check available seeding options
     local has_large_data=false
     local has_basic_data=false
@@ -410,6 +423,32 @@ setup_database() {
     esac
     
     echo ""
+=======
+    # Build backend first if needed
+    if [ -f "tsconfig.json" ]; then
+        print_status "Compiling TypeScript backend..."
+        npx tsc -p tsconfig.json 2>/dev/null || print_warning "TypeScript compilation had warnings"
+    fi
+    
+    # Initialize empty database (create tables only)
+    print_status "Initializing database tables..."
+    if npm run db:init 2>/dev/null || npm run setup:empty 2>/dev/null; then
+        print_success "Database tables created successfully"
+    else
+        print_warning "Database initialization script not found or failed"
+        print_status "You can seed the database later using: ./script/seed-database.sh"
+    fi
+    
+    # Return to project root
+    cd .. || print_warning "Failed to return to project root"
+    
+    print_success "Database setup complete!"
+    echo ""
+    print_status "To seed the database with sample data, run:"
+    echo -e "  ${GREEN}./script/seed-database.sh${NC}     # Interactive seeding"
+    echo -e "  ${GREEN}./script/seed-database.sh --basic${NC} # Basic dataset"
+    echo -e "  ${GREEN}./script/seed-database.sh --large${NC} # Large dataset"
+>>>>>>> 82866fd (installation &  database script updated)
 }
 
 # Function to verify project setup
@@ -532,29 +571,47 @@ main() {
         echo -e "  ✓ npm version: $(npm --version)"
         echo -e "  ✓ Project dependencies: $(ls node_modules | wc -l) packages"
         
+<<<<<<< HEAD
         # Check if database file exists to confirm seeding
         if [ -f "backend/database.sqlite" ]; then
             echo -e "  ✓ Database: Initialized and seeded"
+=======
+        # Check if database file exists
+        if [ -f "backend/database.sqlite" ]; then
+            echo -e "  ✓ Database: Tables initialized"
+>>>>>>> 82866fd (installation &  database script updated)
         else
             echo -e "  ⚠ Database: Not initialized"
         fi
         
         echo ""
         print_status "Available commands:"
+<<<<<<< HEAD
         echo -e "  ${GREEN}npm run dev${NC}        - Start development server"
         echo -e "  ${GREEN}npm run build${NC}      - Build for production"
         echo -e "  ${GREEN}npm run seed${NC}       - Reseed with basic data"
         echo -e "  ${GREEN}npm run seed:large${NC} - Reseed with large dataset"
+=======
+        echo -e "  ${GREEN}npm run dev${NC}                    - Start development server"
+        echo -e "  ${GREEN}npm run build${NC}                  - Build for production"
+        echo -e "  ${GREEN}./script/seed-database.sh${NC} - Seed database with sample data"
+>>>>>>> 82866fd (installation &  database script updated)
         echo ""
         print_status "Development URLs:"
         echo -e "  Frontend: ${BLUE}http://localhost:5173${NC}"
         echo -e "  Backend:  ${BLUE}http://localhost:3001${NC}"
         echo ""
+<<<<<<< HEAD
         print_status "Test Accounts (password: password123):"
         echo -e "  Admin:  ${GREEN}alice_dev${NC}"
         echo -e "  User:   ${GREEN}bob_coder${NC}, ${GREEN}charlie_js${NC}"
         echo ""
         print_status "To start development, run: ${GREEN}npm run dev${NC}"
+=======
+        print_status "Next Steps:"
+        echo -e "  1. Seed the database: ${GREEN}./script/seed-database.sh${NC}"
+        echo -e "  2. Start development:  ${GREEN}npm run dev${NC}"
+>>>>>>> 82866fd (installation &  database script updated)
     else
         print_error "Installation completed but some dependencies are still missing"
         print_status "Please check the error messages above and try manual installation"
@@ -570,6 +627,7 @@ show_usage() {
     echo ""
     echo "Options:"
     echo "  --auto              Run in automated mode (no interactive prompts)"
+<<<<<<< HEAD
     echo "  --seed OPTION       Database seeding option: 'basic', 'large', or 'none'"
     echo "  -h, --help          Show this help message"
     echo ""
@@ -583,6 +641,13 @@ show_usage() {
     echo "  basic   - ~12 users, ~6 questions, ~5 answers (recommended for development)"
     echo "  large   - ~50 users, ~500+ questions, ~1000+ answers (for testing)"
     echo "  none    - Skip database seeding entirely"
+=======
+    echo "  -h, --help          Show this help message"
+    echo ""
+    echo "Note:"
+    echo "  Database seeding is now handled by a separate script:"
+    echo "  ./script/seed-database.sh"
+>>>>>>> 82866fd (installation &  database script updated)
     echo ""
 }
 
