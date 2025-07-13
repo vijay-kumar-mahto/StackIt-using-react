@@ -1,115 +1,205 @@
 # StackIt - Q&A Forum Platform
 
-A modern, minimal question-and-answer platform built with React, TypeScript, and Node.js. StackIt enables collaborative learning and structured knowledge sharing with a focus on simplicity and user experience.
+<div align="center">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React 18"/>
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
+  <img src="https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"/>
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License"/>
+</div>
 
-## Features
+<p align="center">
+  <strong>A modern, minimal question-and-answer platform built with React, TypeScript, and Node.js</strong>
+</p>
 
-### Core Functionality
-- **User Authentication**: Guest viewing, user registration/login, and admin roles
-- **Ask Questions**: Rich text editor with formatting, links, images, and lists
-- **Answer Questions**: Comprehensive answer system with voting and acceptance
-- **Tag System**: Categorize questions with multi-select tags
-- **Voting System**: Upvote/downvote questions and answers
-- **Notifications**: Real-time notifications for interactions
-- **Responsive Design**: Mobile-first design matching provided mockups
+<p align="center">
+  StackIt enables collaborative learning and structured knowledge sharing with a focus on simplicity and user experience.
+</p>
 
-### Rich Text Editor Features
-- Bold, Italic, Strikethrough formatting
-- Numbered and bullet lists
-- Hyperlink insertion
-- Image upload support
-- Text alignment (Left, Center, Right)
+---
 
-### User Roles
-- **Guest**: View all questions and answers
-- **User**: Register, login, post questions/answers, vote
-- **Admin**: Moderate content and manage users
+## 📸 Screenshots
 
-## Tech Stack
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <img src="screenshots/desktop-home.png" alt="Desktop Home Page" width="250"/>
+        <br/>
+        <strong>Desktop View</strong>
+        <br/>
+        <em>Home page with question listing</em>
+      </td>
+      <td align="center" width="33%">
+        <img src="screenshots/mobile-view.png" alt="Mobile View" width="250"/>
+        <br/>
+        <strong>Mobile View</strong>
+        <br/>
+        <em>Responsive mobile design</em>
+      </td>
+      <td align="center" width="33%">
+        <img src="screenshots/rich-editor.png" alt="Rich Text Editor" width="250"/>
+        <br/>
+        <strong>Rich Text Editor</strong>
+        <br/>
+        <em>Full-featured editor with formatting</em>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## ✨ Features
+
+### 🔐 Core Functionality
+- **User Authentication**
+- **Ask Questions**
+- **Answer Questions**
+- **Tag System**
+- **Voting System**
+- **Notifications**
+- **Responsive Design**
+
+### 📝 Rich Text Editor Features
+- **Text Formatting**
+- **Lists**
+- **Media**
+- **Layout**
+
+### 👥 User Roles
+| Role | Permissions |
+|------|-------------|
+| **Guest** | View all questions and answers |
+| **User** | Register, login, post questions/answers, vote |
+| **Admin** | Moderate content and manage users |
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **React 18** with TypeScript
-- **Vite** for fast development and building
-- **Tailwind CSS** for styling
-- **TipTap** for rich text editing
-- **React Router** for navigation
-- **React Hook Form** with Zod validation
-- **Axios** for API calls
-- **Lucide React** for icons
+<table>
+  <tr>
+    <td><strong>Framework</strong></td>
+    <td>React 18 with TypeScript</td>
+  </tr>
+  <tr>
+    <td><strong>Build Tool</strong></td>
+    <td>Vite</td>
+  </tr>
+  <tr>
+    <td><strong>Styling</strong></td>
+    <td>Tailwind CSS</td>
+  </tr>
+  <tr>
+    <td><strong>Text Editor</strong></td>
+    <td>TipTap</td>
+  </tr>
+  <tr>
+    <td><strong>Routing</strong></td>
+    <td>React Router</td>
+  </tr>
+  <tr>
+    <td><strong>Form Handling</strong></td>
+    <td>React Hook Form with Zod validation</td>
+  </tr>
+  <tr>
+    <td><strong>HTTP Client</strong></td>
+    <td>Axios</td>
+  </tr>
+  <tr>
+    <td><strong>Icons</strong></td>
+    <td>Lucide React</td>
+  </tr>
+</table>
 
 ### Backend
-- **Node.js** with Express
-- **TypeScript** for type safety
-- **SQLite** database
-- **JWT** authentication
-- **bcryptjs** for password hashing
-- **Express Rate Limiting** for security
-- **Helmet** for security headers
+<table>
+  <tr>
+    <td><strong>Runtime</strong></td>
+    <td>Node.js with Express</td>
+  </tr>
+  <tr>
+    <td><strong>Language</strong></td>
+    <td>TypeScript</td>
+  </tr>
+  <tr>
+    <td><strong>Database</strong></td>
+    <td>SQLite</td>
+  </tr>
+  <tr>
+    <td><strong>Authentication</strong></td>
+    <td>JWT with bcryptjs</td>
+  </tr>
+  <tr>
+    <td><strong>Security</strong></td>
+    <td>Express Rate Limiting, Helmet</td>
+  </tr>
+</table>
 
-## Getting Started
+---
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
 
 ### Installation
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+For detailed installation instructions, please refer to our comprehensive [Installation Guide](./installation/INSTALL.md).
 
-2. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-   This will start both the frontend (port 5173) and backend (port 3001) concurrently.
+**Quick Setup:**
+```bash
+# Clone the repository
+git clone https://github.com/vijay-kumar-mahto/stackit.git
+cd stackit
 
-### Available Scripts
+# Install dependencies
+npm install
 
-- `npm run dev` - Start both frontend and backend in development mode
-- `npm run client:dev` - Start only the frontend development server
-- `npm run server:dev` - Start only the backend development server
-- `npm run build` - Build the frontend for production
-- `npm run lint` - Run ESLint
+# Start development server
+npm run dev
+```
 
-## Project Structure
+The application will be available at:
+- **Frontend**: `http://localhost:5173`
+- **Backend**: `http://localhost:3001`
+
+---
+
+## 📜 Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start both frontend and backend in development mode |
+| `npm run client:dev` | Start only the frontend development server |
+| `npm run server:dev` | Start only the backend development server |
+| `npm run build` | Build the frontend for production |
+| `npm run lint` | Run ESLint |
+
+---
+
+## 📁 Project Structure
 
 ```
 StackIt/
-├── backend/                 # Backend source code
-│   ├── database/           # Database setup and models
-│   ├── middleware/         # Express middleware
-│   ├── routes/            # API routes
-│   └── index.ts           # Server entry point
-├── src/                   # Frontend source code
-│   ├── components/        # Reusable React components
-│   ├── contexts/          # React contexts (Auth, etc.)
-│   ├── pages/             # Page components
-│   └── main.tsx          # Frontend entry point
-└── package.json         # Dependencies and scripts
+├── 📁 backend/                 # Backend source code
+│   ├── 📁 database/           # Database setup and models
+│   ├── 📁 middleware/         # Express middleware
+│   ├── 📁 routes/            # API routes
+│   └── 📄 index.ts           # Server entry point
+├── 📁 installation/       # Detailed installation guide
+├── 📁 src/                   # Frontend source code
+│   ├── 📁 components/        # Reusable React components
+│   ├── 📁 contexts/          # React contexts (Auth, etc.)
+│   ├── 📁 pages/             # Page components
+│   └── 📄 main.tsx          # Frontend entry point
+├── 📁 screenshots/           # Project screenshots
+├── 📄 package.json         # Dependencies and scripts
+└── 📄 README.md            # This file
 ```
 
-## Features Implemented
+---
 
-✅ **Home Page**: Question listing with search, filtering, and pagination
-✅ **Ask Question Page**: Rich text editor with tag system
-✅ **Question Detail Page**: View questions, answers, and voting
-✅ **User Authentication**: Login, register, and protected routes
-✅ **Voting System**: Upvote/downvote questions and answers
-✅ **Rich Text Editor**: Full formatting capabilities with TipTap
-✅ **Tag System**: Question categorization
-✅ **Notifications**: Real-time notification system
-✅ **Responsive Design**: Mobile-first design
-✅ **User Profiles**: View user activity and statistics
-
-## Usage
-
-1. **Browse Questions**: Visit the home page to see all questions
-2. **Register/Login**: Create an account or sign in to participate
-3. **Ask Questions**: Use the rich text editor to post detailed questions
-4. **Answer Questions**: Provide helpful answers with formatting
-5. **Vote**: Upvote or downvote questions and answers
-6. **Accept Answers**: Question authors can accept the best answer
-7. **Tag Questions**: Categorize questions with relevant tags
-8. **Get Notifications**: Receive notifications for interactions
+<div align="center">
+  <p>
+    <a href="#top">Back to Top ⬆️</a>
+  </p>
+</div>
