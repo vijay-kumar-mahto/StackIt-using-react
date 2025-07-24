@@ -30,6 +30,23 @@
 - ✅ All project dependencies
 - ✅ Database structure (tables only)
 
+### ⚙️ Environment Configuration
+
+Before running the project, set up your environment variables:
+
+```bash
+# Copy the environment template
+cp .env.example .env
+
+# Edit the .env file with your settings
+nano .env  # or use your preferred editor
+```
+
+**Required Environment Variables:**
+- `NODE_ENV` - Development environment (usually "development")
+- `JWT_SECRET` - **IMPORTANT**: Change to a secure random string for production
+- `FRONTEND_URL` - Frontend application URL (default: http://localhost:5173)
+
 ### 🌱 Database Seeding
 
 <div align="center">

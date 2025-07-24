@@ -24,21 +24,21 @@
   <table>
     <tr>
       <td align="center" width="33%">
-        <img src="screenshots/desktop-home.png" alt="Desktop Home Page" width="250"/>
+        <img src="images/HomePage.png" alt="Desktop Home Page" width="250"/>
         <br/>
         <strong>Desktop View</strong>
         <br/>
         <em>Home page with question listing</em>
       </td>
       <td align="center" width="33%">
-        <img src="screenshots/mobile-view.png" alt="Mobile View" width="250"/>
+        <img src="images/AdminPanel.png" alt="Mobile View" width="250"/>
         <br/>
-        <strong>Mobile View</strong>
+        <strong>Admin Panel</strong>
         <br/>
-        <em>Responsive mobile design</em>
+        <em>Responsive admin design</em>
       </td>
       <td align="center" width="33%">
-        <img src="screenshots/rich-editor.png" alt="Rich Text Editor" width="250"/>
+        <img src="images/TextEditor.png" alt="Rich Text Editor" width="250"/>
         <br/>
         <strong>Rich Text Editor</strong>
         <br/>
